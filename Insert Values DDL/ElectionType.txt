@@ -1,0 +1,6 @@
+INSERT INTO ElectionType (ETID, EType)
+VALUES
+('ET01','LokSabha'),
+('ET02','RajyaSabha'),
+('ET03','Assembly'),
+('ET04','Panchayat');

@@ -1,0 +1,22 @@
+INSERT INTO Constituency (ConstituencyID, ConstituencyName)
+VALUES
+   	(101,'Ena'),
+	(102,'Dhamdod'),
+	(103,'Palsana'),
+	(104,'Bardoli'),
+	(105,'Mandvi'),
+	(106,'Kadod'),
+	(107,'Vyara'),
+	(108,'Madhi'),
+	(109,'Songadh'),
+	(110,'Ucchal'),
+	(111,'Navsari'),
+	(112,'Chikhli'),
+	(113,'Bilimora'),
+	(114,'Samroli'),
+	(115,'Varacha'),
+	(116,'Adalaj'),
+	(117,'Vesu'),
+	(118,'Magdalla'),
+	(119,'Kamrej'),
+	(120,'Kadodara');   

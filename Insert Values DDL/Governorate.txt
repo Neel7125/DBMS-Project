@@ -1,0 +1,7 @@
+INSERT INTO Governorate (GovernorateID, GovernorateName)
+VALUES
+    (001,'Neel'),
+    (002,'Yash'),
+    (003,'Jaydatt'),
+    (004,'Yash'),
+    (005,'Aryan');

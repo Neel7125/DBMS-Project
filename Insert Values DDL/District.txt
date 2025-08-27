@@ -1,0 +1,20 @@
+INSERT INTO District (DistrictID, DistrictName, GovernorateID)
+VALUES
+	(1001,'Surat',001),
+	(1002,'Navsari',002),
+	(1003,'Ahemdabad',005),
+	(1004,'Gandhinagar',004),
+	(1005,'Rajkot',003),
+	(1006,'Valsad',002),
+	(1007,'Bhavnagar',005),
+	(1008,'Bharuch',001),
+	(1009,'Aanand',002),
+	(1010,'Junagadh',004),
+	(1011,'Katch',001),
+	(1012,'Vadodara',003),
+	(1013,'Dang',002),
+	(1014,'Tapi',005),
+	(1015,'Rajpipla',002),
+	(1016,'Banaskantha',003),
+	(1017,'Mehsana',004),
+	(1018,'Patan',001);
