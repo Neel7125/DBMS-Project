@@ -1,0 +1,217 @@
+1) Retrieve all governorates:
+
+SELECT * FROM Governorate;
+
+2) Retrieve all constituencies:
+
+SELECT * FROM Constituency;
+
+3) Retrieve all constituency details:
+
+SELECT * FROM ConstituencyDetails;
+
+4) Retrieve all districts:
+
+SELECT * FROM District;
+
+5) Retrieve all cities:
+
+SELECT * FROM City;
+
+6) Retrieve all quarters:
+
+SELECT * FROM Quarter;
+
+7) Retrieve all voters:
+
+SELECT * FROM Voter;
+
+8) Retrieve all seats:
+
+SELECT * FROM Seat;
+
+9) Retrieve all candidates:
+
+SELECT * FROM Candidate;
+
+10) Retrieve all nominating details:
+
+SELECT * FROM Nominating;
+
+11) Retrieve all election types:
+
+SELECT * FROM ElectionType;
+
+12) Retrieve all election cycles:
+
+SELECT * FROM ElectionCycle;
+
+13) Retrieve all polling centers:
+
+SELECT * FROM PollingCenter;
+
+14) Retrieve all voter ballots:
+
+SELECT * FROM VoterBallot;
+
+15) Retrieve the number of voters in each district:
+
+SELECT d.DistrictID, d.DistrictName, COUNT(v.VoterID) AS TotalVoters
+FROM District d
+LEFT JOIN City c ON d.DistrictID = c.DistrictID
+LEFT JOIN Quarter q ON c.CityID = q.CityID
+LEFT JOIN Voter v ON q.QuarterID = v.QuarterID
+GROUP BY d.DistrictID, d.DistrictName;
+
+16) Retrieve the total number of votes received by each candidate in a specific election cycle:
+
+SELECT c.CandidateID, c.FirstName as Candidate_Name, n.No_of_Votes AS TotalVotes
+FROM Candidate c
+JOIN Nominating n ON c.CandidateID = n.CandidateID
+JOIN VoterBallot nb ON n.ElectionCycleID = nb.ElectionCycleID AND c.VoterID = nb.VoterID
+WHERE n.ElectionCycleID = 'EC101'
+GROUP BY c.CandidateID, c.FirstName, c.LastName,n.No_of_Votes,n.ElectionCycleID;
+
+17) Retrieve the winners of each seat in a specific election cycle:
+
+SELECT s.SeatID, c.FirstName, c.LastName,n.ElectionCycleID, MAX(n.No_of_Votes) AS TotalVotes
+FROM Seat s
+JOIN Nominating n ON s.SeatID = n.SeatID
+JOIN Candidate c ON n.CandidateID = c.CandidateID
+JOIN VoterBallot nb ON n.ElectionCycleID = nb.ElectionCycleID AND c.VoterID = nb.VoterID
+WHERE n.ElectionCycleID = 'EC106'
+GROUP BY s.SeatID, c.FirstName, c.LastName,n.ElectionCycleID;
+
+
+18) Retrieve the polling center with the highest voter turnout in a specific election cycle:
+
+SELECT pc.PCID,Count(pc.PCID) as Max_Voters
+FROM PollingCenter pc
+JOIN Voter v ON pc.PCID = v.PollingCenterID
+NATURAL JOIN VoterBallot vb 
+where Vote='1' 
+GROUP BY pc.PCID
+ORDER BY Count(pc.PCID) DESC
+LIMIT 1;
+
+
+
+19) Retrieve the total number of votes cast in each constituency in a specific election cycle:
+
+SELECT c.ConstituencyName, ec.ECID, COUNT(vb.VoterID) AS TotalVotes
+FROM Constituency c
+JOIN ConstituencyDetails cd ON c.ConstituencyID = cd.ConstituencyID
+JOIN District d ON cd.DistrictID = d.DistrictID
+JOIN City ci ON d.DistrictID = ci.DistrictID
+JOIN Quarter q ON ci.CityID = q.CityID
+JOIN PollingCenter pc ON q.QuarterID = pc.QuarterID
+JOIN Voter v ON pc.PCID = v.PollingCenterID
+JOIN VoterBallot vb ON v.VoterID = vb.VoterID
+JOIN ElectionCycle ec ON vb.ElectionCycleID = ec.ECID
+WHERE ec.ECID = 'EC101'
+GROUP BY c.ConstituencyName, ec.ECID;
+
+
+
+20) Retrieve the list of constituencies along with the number of polling centers in each constituency:
+
+select cc.constituencyname,cd.constituencyid,count(pc.PCID) as No_of_pollingCenters from ConstituencyDetails cd
+natural join Constituency cc
+natural join District d
+natural join City c
+natural join Quarter q
+natural join PollingCenter pc
+group by cd.constituencyid,cc.constituencyname
+order by No_of_pollingCenters desc;
+
+21) Retrieve the list of candidates along with their respective parties and the total number of votes they received:
+
+SELECT c.CandidateID,c.partyid,sum(n.No_of_Votes) AS TotalVotes,n.ElectionCycleID
+FROM Candidate c
+JOIN Nominating n ON c.CandidateID = n.CandidateID
+JOIN VoterBallot nb ON n.ElectionCycleID = nb.ElectionCycleID AND c.VoterID = nb.VoterID
+GROUP BY c.CandidateID, c.FirstName, c.LastName, c.partyid,n.ElectionCycleID;
+
+
+22) Retrieve the list of voters who have not voted in a specific election cycle:
+
+SELECT *
+FROM Voter v
+LEFT JOIN VoterBallot vb ON v.VoterID = vb.VoterID
+WHERE (vb.ElectionCycleID IS NULL OR vb.ElectionCycleID != 'EC101') and vb.Vote='0';
+
+23) Retrieve the list of districts along with the total number of candidates running for each district :
+
+SELECT dd.DistrictID, dd.DistrictName,ct.No_of_Member
+FROM Candidate cc
+NATURAL JOIN Nominating nn 
+NATURAL JOIN Quarter qr
+JOIN City ct ON qr.CITYID=ct.CITYID
+JOIN District dd on dd.DistrictID=ct.DistrictID;
+
+24) Retrieve the list of quarters where the number of Mukhtars is greater than 3:
+
+SELECT q.QuarterID, q.QuarterName, q.No_of_Mukhtar
+FROM Quarter q
+WHERE q.No_of_Mukhtar > 3;
+
+
+25) Retrieve the list of constituencies along with the total number of candidates nominated in each constituency for a specific election cycle:
+
+SELECT c.ConstituencyID,c.ConstituencyName,Count(cc.CandidateID)as No_of_Candidates
+FROM Nominating nn
+JOIN Candidate cc ON nn.CandidateID = cc.CandidateID
+JOIN Seat ss ON nn.SeatID = ss.SeatID
+JOIN ElectionCycle ec ON ec.ECID = nn.ElectionCycleID
+JOIN District dd ON dd.districtid = ss.districtid
+JOIN ConstituencyDetails cd ON dd.districtid=cd.districtid
+JOIN Constituency c ON cd.ConstituencyID = c.ConstituencyID
+group by c.ConstituencyID,c.ConstituencyName
+order by No_of_Candidates desc;
+
+26) Retrieve the list of voters who have not voted in any election cycle:
+
+SELECT v.VoterID, v.FirstName, v.LastName
+FROM Voter v
+LEFT JOIN VoterBallot vb ON v.VoterID = vb.VoterID
+WHERE vb.ElectionCycleID IS NULL;
+
+27) Retrieve the list of candidates who have not been nominated in any election cycle:
+
+SELECT c.CandidateID, c.FirstName, c.LastName
+FROM Candidate c
+LEFT JOIN Nominating n ON c.CandidateID = n.CandidateID
+WHERE n.CandidateID IS NULL;
+
+28) Retrieve the list of polling centers along with the total number of voters assigned to each center :
+
+SELECT pc.PCID, pc.PCName,vb.ElectionCycleID, COUNT(v.VoterID) AS TotalVoters
+FROM PollingCenter pc
+LEFT JOIN Voter v ON pc.PCID = v.PollingCenterID
+LEFT JOIN VoterBallot vb ON v.VoterID = vb.VoterID
+GROUP BY pc.PCID, pc.PCName,vb.ElectionCycleID
+ORDER BY TotalVoters DESC;
+
+
+29) Retrieve the list of seats along with the total number of candidates nominated for each seat in a specific election cycle:
+
+SELECT ss.SeatID,COUNT(cc.CandidateID) as NumberOfCandidate,nn.ElectionCycleID from Nominating nn
+natural join Candidate cc
+join Seat ss ON nn.SeatID=ss.SeatID
+join ElectionCycle ec ON ec.ECID=nn.ElectionCycleID
+where nn.ElectionCycleID='EC101'
+Group by ss.SeatID,nn.ElectionCycleID;
+
+
+
+30)In Specific Location how many people are there BPL and Women to Ask for vote and make promices
+ 
+SELECT Count(voterid) as No_of_voter,cc.CityID,cc.CityName from Voter
+natural join Quarter qq
+natural join City cc
+where fsituation='BPL' and gender='F'
+group by cc.CityID,cc.CityName;
+
+
+
+
