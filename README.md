@@ -65,6 +65,3 @@ This project implements an **Electronic Election Management System (EEMS)** titl
 Our initiative is to make elections **easier, fairer, and transparent** using technology.  
 We designed this system to ensure **every vote counts**, election authorities can **manage seamlessly**, and **citizens trust the process**.
 
-## 📜 License
-This project is for **academic and educational purposes**.  
-Feel free to use and adapt for learning.
